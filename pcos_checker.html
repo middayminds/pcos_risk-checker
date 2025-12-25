@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PCOS Risk Checker</title>
+    <style>
+        ody { 
+    font-family: Arial; 
+    padding: 20px; 
+    background-color: #ffe6f0;  /* very light pastel pink */
+    color: #333333;             /* dark text for readability */
+}
+
+.container {
+    max-width: 500px; 
+    margin: auto; 
+    background: #fff0f6;        /* slightly deeper pastel pink for container */
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 0 10px #ffcce6;  /* soft pink shadow */
+}
+
+input, select {
+    width: 100%; 
+    padding: 8px; 
+    margin-top: 5px;
+    background-color: #ffe6f0;  /* pastel input background */
+    color: #333;                /* dark text inside inputs */
+    border: 1px solid #ffb3d1; /* subtle pink border */
+}
+#result {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
+}
+button {
+     display: block;             /* makes it take its own line */
+    width: 100%;                /* full width */
+    margin-top: 20px; 
+    padding: 12px 0;            /* taller button */
+    cursor: pointer; 
+    background-color: #e75480;  /* dark pastel pink */
+    color: white; 
+    border: none; 
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #d43d6a;  /* slightly darker on hover */
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h2>PCOS Risk Checker</h2>
+<p style="color:#555; font-size:14px;">This tool gives an estimated PCOS risk based on your inputs. Always consult a doctor for a proper diagnosis.</p>
+        <label>Age:</label>
+        <input type="number" id="age">
+
+        <label>Menstrual Cycle:</label>
+        <select id="cycle">
+            <option value="regular">Regular</option>
+            <option value="irregular">Irregular</option>
+            <option value="prolonged">Prolonged / Missed</option>
+        </select>
+
+        <label>Symptoms:</label>
+        <input type="checkbox" id="acne"> Acne<br>
+        <input type="checkbox" id="hair"> Hair Thinning<br>
+        <input type="checkbox" id="mood"> Mood Shifts<br>
+
+        <label>Weight (kg):</label>
+        <input type="number" id="weight">
+
+        <label>Height (cm):</label>
+        <input type="number" id="height">
+
+        <button onclick="checkRisk()">Check My Risk</button>
+
+        <div id="result"></div>
+    </div>
+
+<script>
+function checkRisk() {
+    // Get values
+    let age = parseInt(document.getElementById('age').value);
+    let cycle = document.getElementById('cycle').value;
+    let acne = document.getElementById('acne').checked;
+    let hair = document.getElementById('hair').checked;
+    let mood = document.getElementById('mood').checked;
+    let weight = parseFloat(document.getElementById('weight').value);
+    let height = parseFloat(document.getElementById('height').value);
+
+    // Calculate BMI
+    let bmi = 0;
+    if(height > 0) {
+        bmi = weight / ((height/100)*(height/100));
+    }
+
+    // Rule-based scoring
+    let score = 0;
+
+    // Menstrual cycle
+    if(cycle === "irregular") score += 3;
+    if(cycle === "prolonged") score += 3;
+
+    // Symptoms
+    if(acne) score += 1;
+    if(hair) score += 1;
+    if(mood) score += 1;
+
+    // BMI
+    if(bmi >= 25) score += 2;
+
+    // Determine risk
+    let risk = "";
+    let color = "";
+    if(score <= 2) {
+        risk = "LOW";
+        color = "#a2f5a2"; // pastel green
+    } else if(score <= 5) {
+        risk = "MODERATE";
+        color = "#fff1a8"; // pastel yellow
+    } else {
+        risk = "HIGH";
+        color = "#ffb3b3"; // pastel red/pink
+    }
+
+    // Show result
+    let message = "Your PCOS Risk: " + risk + "\n";
+    if(risk === "LOW") message += "Maintain a healthy lifestyle and monitor symptoms.";
+    if(risk === "MODERATE") message += "Consider lifestyle changes and consult a healthcare professional.";
+    if(risk === "HIGH") message += "Please consult a gynecologist or endocrinologist for proper evaluation.";
+
+    let resultDiv = document.getElementById('result');
+    resultDiv.innerText = message;
+    resultDiv.style.backgroundColor = color;
+    resultDiv.style.padding = "15px";
+    resultDiv.style.borderRadius = "8px";
+}
+</script>
+</body>
+</html>
